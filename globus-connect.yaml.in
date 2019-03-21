@@ -1,0 +1,27 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: globus-connect
+  namespace: @NAMESPACE@
+spec:
+  serviceName: globus-connect-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: globus-connect
+    spec:
+      containers:
+      - name: globus-connect-server
+        image: @REGISTRY@
+        imagePullPolicy: Always
+        args: ["/usr/sbin/globus-gridftp-server", "-c", "/etc/gridftp.conf", "-pidfile", "/var/run/globus-gridftp-server.pid", "-no-detach", "-config-base-path", "/data"]
+        volumeMounts:
+            - mountPath: /data
+              name: globus-connect-data
+      volumes:
+      - name: globus-connect-data
+        persistentVolumeClaim:
+          claimName: globus-connect-data
+      nodeSelector:
+        nw: @NW@G

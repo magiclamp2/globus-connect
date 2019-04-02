@@ -36,3 +36,10 @@ ADD globus-connect-server.conf /etc/globus-connect-server.conf
 ENV HOME /root
 ENV TERM xterm
 
+# add GridFTP data directory
+VOLUME /data
+# add pid directory
+VOLUME /var/run
+ENTRYPOINT [ "/usr/sbin/globus-gridftp-server" ]
+
+CMD ["-c", "/etc/gridftp.conf", "-pidfile", "/var/run/globus-gridftp-server.pid", "-no-detach", "-config-base-path", "/data"]
